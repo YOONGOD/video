@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.3.0/video-js.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.3.0/video.min.js"></script>
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+    <script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <title>Video Player</title>
+    <style>
+        html,body{
+        width:100% !important;
+        height:100% !important;
+        margin: 0;
+        overflow: hidden;
+        }
+        video{
+            object-fit:fill !important;
+            font-size: 0;
+            background:none;
+            display: block;
+            width:100% !important;
+            height:100% !important;
+        }
+        
+        .jwplayer .jw-icon-barlogo-new:before {
+            content: none;
+        }
+        .jw-icon-barlogo-new {
+            background: none; /* 更换logo */
+            background-position: center;
+        }
+    .vjs-big-play-centered{
+      height:100%;
+      width:100%;
+    }
+    .vjs-paused .vjs-big-play-button,
+    .vjs-paused.vjs-has-started .vjs-big-play-button {
+      display: block;
+    }
+    .video-js .vjs-big-play-button{
+       font-size: 2.5em;
+       line-height: 2.3em;
+       height: 2.5em;
+       width: 2.5em;
+       -webkit-border-radius: 2.5em;
+       -moz-border-radius: 2.5em;
+       border-radius: 2.5em;
+       background-color: #73859f;
+       background-color: rgba(115,133,159,.5);
+       border-width: 0.15em;
+       margin-top: -1.25em;
+       margin-left: -1.75em;
+     }
+        /* 中间的播放箭头 */
+        .vjs-big-play-button .vjs-icon-placeholder {
+        font-size: 1.63em;
+        }
+        /* 加载圆圈 */
+        .vjs-loading-spinner {
+        font-size: 2.5em;
+        width: 2em;
+        height: 2em;
+        border-radius: 1em;
+        margin-top: -1em;
+        margin-left: -1.5em;
+        }
+        .video-js.vjs-playing .vjs-tech {
+        pointer-events: auto;
+        }
+        .video-js .vjs-time-control{display:block;}
+        .video-js .vjs-remaining-time{display: none;}
+    </style>
+</head>
+<body>
+    <div id="playercontainer"></div>
+    <div class="box">
+        <video id="live-stream" class="video-js vjs-default-skin vjs-big-play-centered"
+        autoplay preload="auto" data-setup="{'example_option':true}" playsinline>
+        </video>
+    </div>
+<script>
+        if(window.location.search.indexOf('rtmp')!==-1 || window.location.search.indexOf('flv')!==-1){
+            document.write("<script src='./cyberplayer.js'><\/script>");
+        }
+    </script>
+    <script type="text/javascript">
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+    if(window.location.search.indexOf('rtmp')!==-1 || window.location.search.indexOf('flv')!==-1){
+        var player = cyberplayer("playercontainer").setup({
+            width : '100%',
+            height : '100%',
+            backcolor : "#FFFFFF",
+            stretching : "fill",
+            file : getQueryString("playerUrl"),
+            ak : "f13612a5a49c41bc88ae9c3f9676fc1c",//百度云播放器access key
+            autoStart : true,
+            repeat : false,
+            volume : 100,
+            controls : "over",
+            barLogo : false //时候显示logo
+        });
+    } else {
+        var options = {
+            muted: false,
+            controls: true,
+            autoplay:true,
+            notSupportedMessage: '此视频暂时无法播放，请稍后再试',
+            language:'zh-CN',
+            isFullscreen: true
+        }
+        var player = videojs('live-stream', options).ready(function() {
+            var myPlayer = this;
+            if(getQueryString('playerUrl')){
+                myPlayer.src(getQueryString('playerUrl'));
+            } else {
+                myPlayer.src('');
+            }
+            myPlayer.play();
+        })
+    }
+        
+    document.body.addEventListener('touchmove', function (e) {
+        e.preventDefault(); //阻止默认的处理方式(阻止下拉滑动的效果)
+    }, {passive: false});
+</script>
+</body>
+</html>
